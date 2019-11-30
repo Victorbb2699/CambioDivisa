@@ -4,9 +4,11 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -18,6 +20,10 @@ public class CambioDivisa extends Application {
 	private ComboBox<String> authModeCombo;
 	private ComboBox<String> authModeCombo2;
 	private Button convertirButton;
+	private Divisa euro = new Divisa("Euro", 1.0);
+	private Divisa libra = new Divisa("Libra", 0.8873);
+	private Divisa dolar = new Divisa("Dolar", 1.2007);
+	private Divisa yen = new Divisa("Yen", 133.59);
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -61,49 +67,58 @@ public class CambioDivisa extends Application {
 
 	private void onConvertirButtonAcction(ActionEvent e) {
 		double cantidad = Double.parseDouble(primerText.getText());
-		Divisa euro = new Divisa("Euro", 1.0);
-		Divisa libra = new Divisa("Libra", 0.8873);
-		Divisa dolar = new Divisa("Dolar", 1.2007);
-		Divisa yen = new Divisa("Yen", 133.59);
 
-		if (authModeCombo.getSelectionModel().getSelectedItem().equals("Euro")) {
-			String aux = authModeCombo.getSelectionModel().getSelectedItem();
-			if (aux.equals(yen.getNombre())) {
-				Divisa.fromTo(euro, yen, cantidad);
-			} else if (aux.equals(libra.getNombre())) {
-				Divisa.fromTo(euro, libra, cantidad);
-			} else if (aux.equals(dolar.getNombre())) {
-				Divisa.fromTo(euro, dolar, cantidad);
-			}
+		if (Double.parseDouble(primerText.getText()) < 0) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Cambio de divisas");
+			alert.setHeaderText("Error");
+			alert.setContentText("Introduce un número válido");
+			alert.showAndWait();
+		} else {
+			if (authModeCombo.getSelectionModel().getSelectedItem().equals("Euro")) {
+				String aux = authModeCombo2.getSelectionModel().getSelectedItem();
+				if (aux.equals(yen.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(euro, yen, cantidad)));
+				} else if (aux.equals(libra.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(euro, libra, cantidad)));
 
-		} else if (authModeCombo.getSelectionModel().getSelectedItem().equals("Libra")) {
-			String aux = authModeCombo.getSelectionModel().getSelectedItem();
-			if (aux.equals(yen.getNombre())) {
-				Divisa.fromTo(libra, yen, cantidad);
-			} else if (aux.equals(libra.getNombre())) {
-				Divisa.fromTo(libra, euro, cantidad);
-			} else if (aux.equals(dolar.getNombre())) {
-				Divisa.fromTo(libra, dolar, cantidad);
-			}
-		} else if (authModeCombo.getSelectionModel().getSelectedItem().equals("Dolar")) {
-			String aux = authModeCombo.getSelectionModel().getSelectedItem();
-			if (aux.equals(yen.getNombre())) {
-				Divisa.fromTo(dolar, yen, cantidad);
-			} else if (aux.equals(libra.getNombre())) {
-				Divisa.fromTo(dolar, libra, cantidad);
-			} else if (aux.equals(dolar.getNombre())) {
-				Divisa.fromTo(dolar, euro, cantidad);
-			}
-		} else if (authModeCombo.getSelectionModel().getSelectedItem().equals("Yen")) {
-			String aux = authModeCombo.getSelectionModel().getSelectedItem();
-			if (aux.equals(yen.getNombre())) {
-				Divisa.fromTo(yen, euro, cantidad);
-			} else if (aux.equals(libra.getNombre())) {
-				Divisa.fromTo(yen, libra, cantidad);
-			} else if (aux.equals(dolar.getNombre())) {
-				Divisa.fromTo(yen, dolar, cantidad);
+				} else if (aux.equals(dolar.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(euro, dolar, cantidad)));
+				}
+
+			} else if (authModeCombo.getSelectionModel().getSelectedItem().equals("Libra")) {
+				String aux = authModeCombo2.getSelectionModel().getSelectedItem();
+				if (aux.equals(yen.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(libra, yen, cantidad)));
+
+				} else if (aux.equals(euro.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(libra, euro, cantidad)));
+
+				} else if (aux.equals(dolar.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(libra, dolar, cantidad)));
+
+				}
+			} else if (authModeCombo.getSelectionModel().getSelectedItem().equals("Dolar")) {
+				String aux = authModeCombo2.getSelectionModel().getSelectedItem();
+				if (aux.equals(yen.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(dolar, yen, cantidad)));
+				} else if (aux.equals(libra.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(dolar, libra, cantidad)));
+				} else if (aux.equals(euro.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(dolar, euro, cantidad)));
+				}
+			} else if (authModeCombo.getSelectionModel().getSelectedItem().equals("Yen")) {
+				String aux = authModeCombo2.getSelectionModel().getSelectedItem();
+				if (aux.equals(euro.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(yen, euro, cantidad)));
+				} else if (aux.equals(libra.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(yen, libra, cantidad)));
+				} else if (aux.equals(dolar.getNombre())) {
+					segundoText.setText(String.valueOf(Divisa.fromTo(yen, dolar, cantidad)));
+				}
 			}
 		}
+
 	}
 
 	public static void main(String[] args) {
